@@ -1,0 +1,8 @@
+venv/
+__pycache__/
+*.pyc
+osint_evidence.db
+uploads/*
+!uploads/.gitkeep
+*.ots
+.vscode/

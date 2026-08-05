@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Full Audit Log</h1>
+<table>
+    <tr>
+        <th>Timestamp</th><th>Evidence ID</th><th>Action</th><th>Details</th>
+    </tr>
+    {% for entry in entries %}
+    <tr>
+        <td>{{ entry.timestamp }}</td>
+        <td><a href="{{ url_for('evidence_detail', evidence_id=entry.evidence_id) }}">#{{ entry.evidence_id }}</a></td>
+        <td>{{ entry.action }}</td>
+        <td class="hash">{{ entry.details }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

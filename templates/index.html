@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Evidence Log</h1>
+<table>
+    <tr>
+        <th>ID</th><th>Filename</th><th>SHA-256</th><th>Admiralty</th><th>OTS Status</th><th>Uploaded</th><th></th>
+    </tr>
+    {% for e in evidence_list %}
+    <tr>
+        <td>{{ e.id }}</td>
+        <td>{{ e.original_filename }}</td>
+        <td class="hash">{{ e.file_hash[:16] }}...</td>
+        <td>{{ e.admiralty_source }}{{ e.admiralty_info }}</td>
+        <td><span class="status-{{ e.ots_status }}">{{ e.ots_status }}</span></td>
+        <td>{{ e.upload_timestamp }}</td>
+        <td><a href="{{ url_for('evidence_detail', evidence_id=e.id) }}">View</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

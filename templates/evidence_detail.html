@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Evidence #{{ evidence.id }}</h1>
+<table class="detail">
+    <tr><td>Original filename</td><td>{{ evidence.original_filename }}</td></tr>
+    <tr><td>SHA-256 hash</td><td class="hash">{{ evidence.file_hash }}</td></tr>
+    <tr><td>File size</td><td>{{ evidence.file_size }} bytes</td></tr>
+    <tr><td>Source URL</td><td>{{ evidence.source_url }}</td></tr>
+    <tr><td>Description</td><td>{{ evidence.description }}</td></tr>
+    <tr><td>Admiralty rating</td><td>{{ evidence.admiralty_source }}{{ evidence.admiralty_info }}</td></tr>
+    <tr><td>OTS status</td><td>{{ evidence.ots_status }}</td></tr>
+    <tr><td>Uploaded</td><td>{{ evidence.upload_timestamp }}</td></tr>
+</table>
+
+<h2>Audit Trail</h2>
+<table>
+    <tr><th>Timestamp</th><th>Action</th><th>Details</th></tr>
+    {% for entry in audit_entries %}
+    <tr>
+        <td>{{ entry.timestamp }}</td>
+        <td>{{ entry.action }}</td>
+        <td>{{ entry.details }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
