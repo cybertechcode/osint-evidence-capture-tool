@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}OSINT Evidence Tool{% endblock %}</title>
+<style>
+ body{font-family:system-ui,Arial,sans-serif;margin:0;background:#f4f6f8;color:#1b2430}
+ nav{background:#14213d;padding:12px 24px;display:flex;gap:18px;align-items:center}
+ nav a{color:#fff;text-decoration:none;font-size:14px} nav .sp{flex:1} nav span{color:#cbd5e1;font-size:13px}
+ main{max-width:980px;margin:24px auto;padding:0 16px}
+ .card{background:#fff;border:1px solid #dde3ea;border-radius:8px;padding:18px;margin-bottom:16px}
+ label{display:block;font-weight:600;margin:12px 0 4px;font-size:14px}
+ input,select,textarea{width:100%;padding:8px;border:1px solid #c3ccd6;border-radius:6px;font:inherit;box-sizing:border-box}
+ button,.btn{background:#14213d;color:#fff;border:0;border-radius:6px;padding:8px 14px;cursor:pointer;font:inherit;text-decoration:none;display:inline-block}
+ table{border-collapse:collapse;width:100%;font-size:13px} th,td{border-bottom:1px solid #e5e9ef;padding:6px 8px;text-align:left;vertical-align:top}
+ code{background:#eef1f5;padding:1px 4px;border-radius:4px;word-break:break-all;font-size:12px}
+ .flash{background:#fff7d6;border:1px solid #f0d56a;padding:10px;border-radius:6px;margin-bottom:12px}
+ .ok{color:#116329;font-weight:700}.bad{color:#b42318;font-weight:700}
+</style>
+</head>
+<body>
+<nav>
+ <strong style="color:#fff">OSINT Evidence Tool</strong>
+ {% if session.username %}
+ <a href="{{ url_for('index') }}">Evidence</a>
+ <a href="{{ url_for('upload') }}">Upload file</a>
+ <a href="{{ url_for('capture') }}">Capture URL</a>
+ <a href="{{ url_for('verify') }}">Verify</a>
+ <a href="{{ url_for('full_audit_log') }}">Audit log</a>
+ <span class="sp"></span><span>{{ current_user }}</span>
+ <a href="{{ url_for('logout') }}">Logout</a>
+ {% endif %}
+</nav>
+<main>
+ {% with msgs = get_flashed_messages() %}{% for m in msgs %}<div class="flash">{{ m }}</div>{% endfor %}{% endwith %}
+ {% block content %}{% endblock %}
+</main>
+</body>
+</html>

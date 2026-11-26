@@ -1,0 +1,27 @@
+{% extends "_layout.html" %}
+{% block content %}
+<div class="card">
+ <h2>Verify a file</h2>
+ <p>Upload a copy of a file. The tool recomputes its SHA-256 and compares it with the register. Any change, even one bit, gives NO MATCH.</p>
+ <form method="post" enctype="multipart/form-data">
+  <label>File to verify</label><input type="file" name="file" required>
+  <label>Compare against a specific evidence item (optional)</label>
+  <select name="evidence_id"><option value="">Any item in the register</option>
+   {% for e in evidence_list %}<option value="{{ e['id'] }}">#{{ e['id'] }} - {{ e['original_filename'] }}</option>{% endfor %}</select>
+  <p><button>Verify</button></p>
+ </form>
+</div>
+{% if result %}
+<div class="card">
+ <h3>Result: <span class="{{ 'ok' if result.verdict == 'MATCH' else 'bad' }}">{{ result.verdict }}</span></h3>
+ <p>Computed SHA-256 of <b>{{ result.filename }}</b>: <code>{{ result.digest }}</code></p>
+ {% if result.target %}
+  <p>Recorded hash for #{{ result.target['id'] }}: <code>{{ result.target['file_hash'] }}</code></p>
+  <p>Stored server copy still matches its recorded hash:
+   <span class="{{ 'ok' if result.stored_ok else 'bad' }}">{{ 'Yes' if result.stored_ok else 'NO' }}</span></p>
+ {% elif result.matches %}
+  <p>Matches register item(s): {% for m in result.matches %}<a href="{{ url_for('evidence_detail', evidence_id=m['id']) }}">#{{ m['id'] }}</a> {% endfor %}</p>
+ {% else %}<p>No register entry has this hash.</p>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "_layout.html" %}
+{% block content %}
+<div class="card">
+ <h2>Capture a web page</h2>
+ <p>Retrieves the page and stores (1) the raw HTML exactly as received, (2) the HTTP response headers with retrieval time and redirect chain, and optionally (3) a full-page screenshot and PDF of how the page renders in a real browser. Every file is hashed and timestamped.</p>
+ <form method="post">
+  <label>URL (public http/https only)</label><input name="url" type="url" required placeholder="https://example.com/page">
+  <label style="display:flex;gap:8px;align-items:center;font-weight:400">
+   <input type="checkbox" name="render" value="1" style="width:auto" {% if render_available %}checked{% else %}disabled{% endif %}>
+   Also capture a rendered screenshot and PDF (headless browser)
+  </label>
+  {% if not render_available %}<small>Not available: run <code>pip install playwright</code> then <code>playwright install chromium</code>.</small>{% endif %}
+  <label>Description</label><textarea name="description" rows="3"></textarea>
+  <label>Admiralty - source reliability</label>
+  <select name="admiralty_source" required>{% for v,l in ADMIRALTY_SOURCE %}<option value="{{ v }}">{{ l }}</option>{% endfor %}</select>
+  <label>Admiralty - information credibility</label>
+  <select name="admiralty_info" required>{% for v,l in ADMIRALTY_INFO %}<option value="{{ v }}">{{ l }}</option>{% endfor %}</select>
+  <p><button>Capture, hash and timestamp</button></p>
+ </form>
+</div>
+{% endblock %}

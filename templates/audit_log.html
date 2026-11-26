@@ -1,17 +1,23 @@
-{% extends "base.html" %}
+{% extends "_layout.html" %}
 {% block content %}
-<h1>Full Audit Log</h1>
-<table>
-    <tr>
-        <th>Timestamp</th><th>Evidence ID</th><th>Action</th><th>Details</th>
-    </tr>
-    {% for entry in entries %}
-    <tr>
-        <td>{{ entry.timestamp }}</td>
-        <td><a href="{{ url_for('evidence_detail', evidence_id=entry.evidence_id) }}">#{{ entry.evidence_id }}</a></td>
-        <td>{{ entry.action }}</td>
-        <td class="hash">{{ entry.details }}</td>
-    </tr>
-    {% endfor %}
-</table>
+<div class="card">
+ <h2>Audit log</h2>
+ <p>Chain status:
+  {% if chain.ok %}<span class="ok">INTACT</span> ({{ chain.checked }} entries verified){% else %}
+  <span class="bad">BROKEN at entry #{{ chain.broken_id }}</span> - {{ chain.reason }}{% endif %}</p>
+ <form method="post" action="{{ url_for('anchor_audit_log') }}"><button>Anchor current chain head with OpenTimestamps</button></form>
+</div>
+{% if anchors %}
+<div class="card"><h3>External anchors</h3>
+ <table><tr><th>ID</th><th>Created (UTC)</th><th>Entries</th><th>Head hash</th><th>Status</th><th></th></tr>
+ {% for a in anchors %}<tr><td>{{ a['id'] }}</td><td>{{ a['created'] }}</td><td>{{ a['entries_count'] }}</td>
+  <td><code>{{ a['head_hash'][:20] }}…</code></td><td>{{ a['status'] }}</td>
+  <td><form method="post" action="{{ url_for('anchor_upgrade', anchor_id=a['id']) }}"><button>Check / upgrade</button></form></td></tr>{% endfor %}
+ </table></div>
+{% endif %}
+<div class="card">
+ <table><tr><th>#</th><th>Time (UTC)</th><th>User</th><th>Item</th><th>Action</th><th>Details</th><th>Entry hash</th></tr>
+ {% for a in entries %}<tr><td>{{ a['id'] }}</td><td>{{ a['timestamp'] }}</td><td>{{ a['user'] or '(not logged in)' }}</td><td>{{ a['evidence_id'] or '' }}</td>
+  <td>{{ a['action'] }}</td><td>{{ a['details'] }}</td><td><code>{{ a['entry_hash'][:12] }}…</code></td></tr>{% endfor %}
+ </table></div>
 {% endblock %}

@@ -1,36 +1,18 @@
-{% extends "base.html" %}
+{% extends "_layout.html" %}
 {% block content %}
-<h1>Log New Evidence</h1>
-<form method="POST" enctype="multipart/form-data">
-    <label>File (screenshot / image / document):</label>
-    <input type="file" name="file" required>
-
-    <label>Source URL:</label>
-    <input type="text" name="source_url" placeholder="https://...">
-
-    <label>Description / Notes:</label>
-    <textarea name="description" rows="3"></textarea>
-
-    <label>Admiralty Code - Source Reliability:</label>
-    <select name="admiralty_source">
-        <option value="A">A - Completely reliable</option>
-        <option value="B">B - Usually reliable</option>
-        <option value="C">C - Fairly reliable</option>
-        <option value="D">D - Not usually reliable</option>
-        <option value="E">E - Unreliable</option>
-        <option value="F">F - Cannot be judged</option>
-    </select>
-
-    <label>Admiralty Code - Information Credibility:</label>
-    <select name="admiralty_info">
-        <option value="1">1 - Confirmed by other sources</option>
-        <option value="2">2 - Probably true</option>
-        <option value="3">3 - Possibly true</option>
-        <option value="4">4 - Doubtful</option>
-        <option value="5">5 - Improbable</option>
-        <option value="6">6 - Cannot be judged</option>
-    </select>
-
-    <button type="submit">Log Evidence</button>
-</form>
+<div class="card">
+ <h2>Upload evidence file</h2>
+ <form method="post" enctype="multipart/form-data">
+  <label>File</label><input type="file" name="file" required>
+  <label>Evidence type</label>
+  <select name="evidence_type">{% for t in EVIDENCE_TYPES %}<option>{{ t }}</option>{% endfor %}</select>
+  <label>Source URL</label><input name="source_url" placeholder="https://…">
+  <label>Description</label><textarea name="description" rows="3"></textarea>
+  <label>Admiralty - source reliability</label>
+  <select name="admiralty_source" required>{% for v,l in ADMIRALTY_SOURCE %}<option value="{{ v }}">{{ l }}</option>{% endfor %}</select>
+  <label>Admiralty - information credibility</label>
+  <select name="admiralty_info" required>{% for v,l in ADMIRALTY_INFO %}<option value="{{ v }}">{{ l }}</option>{% endfor %}</select>
+  <p><button>Hash, timestamp and log</button></p>
+ </form>
+</div>
 {% endblock %}

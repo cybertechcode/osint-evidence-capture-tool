@@ -1,8 +1,12 @@
-venv/
+# Python
+.venv/
 __pycache__/
 *.pyc
+
+# Evidence data - never publish (local test data only)
 osint_evidence.db
-uploads/*
-!uploads/.gitkeep
-*.ots
-.vscode/
+osint_forged_copy.db
+*.db
+uploads/
+anchors/
+*.zip

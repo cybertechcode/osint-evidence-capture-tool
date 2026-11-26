@@ -1,26 +1,38 @@
-{% extends "base.html" %}
+{% extends "_layout.html" %}
 {% block content %}
-<h1>Evidence #{{ evidence.id }}</h1>
-<table class="detail">
-    <tr><td>Original filename</td><td>{{ evidence.original_filename }}</td></tr>
-    <tr><td>SHA-256 hash</td><td class="hash">{{ evidence.file_hash }}</td></tr>
-    <tr><td>File size</td><td>{{ evidence.file_size }} bytes</td></tr>
-    <tr><td>Source URL</td><td>{{ evidence.source_url }}</td></tr>
-    <tr><td>Description</td><td>{{ evidence.description }}</td></tr>
-    <tr><td>Admiralty rating</td><td>{{ evidence.admiralty_source }}{{ evidence.admiralty_info }}</td></tr>
-    <tr><td>OTS status</td><td>{{ evidence.ots_status }}</td></tr>
-    <tr><td>Uploaded</td><td>{{ evidence.upload_timestamp }}</td></tr>
-</table>
-
-<h2>Audit Trail</h2>
-<table>
-    <tr><th>Timestamp</th><th>Action</th><th>Details</th></tr>
-    {% for entry in audit_entries %}
-    <tr>
-        <td>{{ entry.timestamp }}</td>
-        <td>{{ entry.action }}</td>
-        <td>{{ entry.details }}</td>
-    </tr>
-    {% endfor %}
-</table>
+<div class="card">
+ <h2>Evidence #{{ evidence['id'] }} - {{ evidence['original_filename'] }}</h2>
+ <table>
+  <tr><th>SHA-256</th><td><code>{{ evidence['file_hash'] }}</code></td></tr>
+  <tr><th>Size / MIME</th><td>{{ evidence['file_size'] }} bytes / {{ evidence['mime_type'] }}</td></tr>
+  <tr><th>Investigator</th><td>{{ evidence['investigator'] }}</td></tr>
+  <tr><th>Evidence type</th><td>{{ evidence['evidence_type'] }}</td></tr>
+  <tr><th>Capture method</th><td>{{ evidence['capture_method'] }}</td></tr>
+  <tr><th>Metadata preservation</th><td>{{ evidence['metadata_preserved'] }}</td></tr>
+  <tr><th>Source URL</th><td>{{ evidence['source_url'] }}</td></tr>
+  <tr><th>Retrieved at (UTC)</th><td>{{ evidence['retrieved_at'] or '-' }}</td></tr>
+  <tr><th>Recorded at (UTC)</th><td>{{ evidence['upload_timestamp'] }}</td></tr>
+  <tr><th>Admiralty rating</th><td>{{ evidence['admiralty_source'] }}{{ evidence['admiralty_info'] }}</td></tr>
+  <tr><th>Description</th><td>{{ evidence['description'] }}</td></tr>
+  <tr><th>OpenTimestamps</th><td>{{ evidence['ots_status'] }}</td></tr>
+ </table>
+ <p style="display:flex;gap:8px;flex-wrap:wrap">
+  <form method="post" action="{{ url_for('ots_upgrade', evidence_id=evidence['id']) }}"><button>Check / upgrade timestamp</button></form>
+  <form method="post" action="{{ url_for('restamp', evidence_id=evidence['id']) }}"><button>Re-stamp</button></form>
+  <a class="btn" href="{{ url_for('evidence_file', evidence_id=evidence['id']) }}">Open / download stored file</a>
+  <a class="btn" href="{{ url_for('export_bundle', evidence_id=evidence['id']) }}">Export evidence bundle (ZIP)</a>
+ </p>
+</div>
+{% if evidence['mime_type'] in ('image/png', 'image/jpeg') %}
+<div class="card"><h3>Stored image</h3>
+ <img src="{{ url_for('evidence_file', evidence_id=evidence['id']) }}" alt="Stored evidence image" style="max-width:100%;border:1px solid #dde3ea"></div>
+{% endif %}
+{% if metadata %}
+<div class="card"><h3>Extracted metadata</h3>
+ <table>{% for k,v in metadata.items() %}<tr><th>{{ k }}</th><td>{{ v }}</td></tr>{% endfor %}</table></div>
+{% endif %}
+<div class="card"><h3>Audit trail for this item</h3>
+ <table><tr><th>#</th><th>Time (UTC)</th><th>User</th><th>Action</th><th>Details</th></tr>
+ {% for a in audit_entries %}<tr><td>{{ a['id'] }}</td><td>{{ a['timestamp'] }}</td><td>{{ a['user'] or '(not logged in)' }}</td><td>{{ a['action'] }}</td><td>{{ a['details'] }}</td></tr>{% endfor %}
+ </table></div>
 {% endblock %}
